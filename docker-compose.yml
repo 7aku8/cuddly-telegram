@@ -14,6 +14,10 @@ services:
       - .env.development
     restart: always
     command: npm run start:dev
+    ports:
+      - "4444:4444"
+    expose:
+      - 4444
     volumes:
       - ./:/app
     depends_on:

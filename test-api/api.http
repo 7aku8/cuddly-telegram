@@ -1,2 +1,11 @@
 ### Register
-POST {{url}}
+POST {{url}}/auth/register
+Content-Type: application/json
+
+{
+  "name": "name1",
+  "password": "1234FgFF3$",
+  "gender": "male",
+  "phone_number": "+48575943354",
+  "email": "kubawolak@onet.com.pl"
+}

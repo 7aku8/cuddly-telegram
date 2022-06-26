@@ -9,7 +9,7 @@ import { ConfigService } from '@shared/config.service';
 
 @Injectable()
 export class AuthService {
-  private userPool: CognitoUserPool;
+  private readonly userPool: CognitoUserPool;
   private sessionUserAttributes: object;
 
   constructor(private readonly configService: ConfigService) {
@@ -23,16 +23,28 @@ export class AuthService {
     name,
     email,
     password,
+    gender,
+    phone_number,
   }: {
     name: string;
     email: string;
     password: string;
+    gender: string;
+    phone_number: string;
   }) {
     return new Promise((resolve, reject) =>
       this.userPool.signUp(
         name,
         password,
-        [new CognitoUserAttribute({ Name: 'email', Value: email })],
+        [
+          new CognitoUserAttribute({ Name: 'name', Value: name }),
+          new CognitoUserAttribute({ Name: 'email', Value: email }),
+          new CognitoUserAttribute({ Name: 'gender', Value: gender }),
+          new CognitoUserAttribute({
+            Name: 'phone_number',
+            Value: phone_number,
+          }),
+        ],
         null,
         (error, result) => {
           if (!result) {

@@ -7,7 +7,14 @@ export class AuthController {
 
   @Post('register')
   async register(
-    @Body() payload: { name: string; password: string; email: string },
+    @Body()
+    payload: {
+      name: string;
+      password: string;
+      email: string;
+      gender: string;
+      phone_number: string;
+    },
   ) {
     return await this.authService.registerUser(payload);
   }
