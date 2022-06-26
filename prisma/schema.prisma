@@ -8,6 +8,14 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum ExerciseType {
+  WEIGHT
+  TIME
+  TIME_WEIGHT
+  REPS
+  WEIGHT_REPS
+}
+
 model User {
   id String @id @default(uuid()) @db.Uuid
 
@@ -21,5 +29,61 @@ model User {
   updatedAt DateTime @default(now()) @updatedAt @db.Timestamptz(6) @map("updated_at")
   createdAt DateTime @default(now()) @db.Timestamptz(6) @map("created_at")
 
+  workouts Workout[]
+
   @@map("user")
+}
+
+model Workout {
+  id String @id @default(uuid()) @db.Uuid
+
+  userId String @db.Uuid @map("user_id")
+  user User @relation(fields: [userId], references: [id])
+
+  finishedAt DateTime? @db.Timestamptz(6) @map("finished_at")
+  updatedAt DateTime @default(now()) @updatedAt @db.Timestamptz(6) @map("updated_at")
+  createdAt DateTime @default(now()) @db.Timestamptz(6) @map("created_at")
+
+  @@map("workout")
+}
+
+model Exercise {
+  id String @id @default(uuid()) @db.Uuid
+
+  order Integer
+
+  name String @db.VarChar(60)
+  description String @db.VarChar(1000)
+
+  image String @db.VarChar(100)
+
+  type ExerciseType
+
+  updatedAt DateTime @default(now()) @updatedAt @db.Timestamptz(6) @map("updated_at")
+  createdAt DateTime @default(now()) @db.Timestamptz(6) @map("created_at")
+
+  @@map("exercise")
+}
+
+model Set {
+  id String @id @default(uuid()) @db.Uuid
+
+  finished Boolean @default(false)
+
+  reps Integer
+  weight Integer
+
+  weightUnitId String @db.Uuid @map("weight_unit_id")
+  weightUnit Unit @relaiton(fields: [weightUnitId], references: [id])
+
+
+  @@map("set")
+}
+
+model Unit {
+  id String @id @default(uuid()) @db.Uuid
+
+  name String
+
+  @@map("unit")
 }
