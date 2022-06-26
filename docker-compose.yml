@@ -1,0 +1,45 @@
+version: "3.8"
+
+services:
+  auth_api:
+    container_name: gym_tracker_api
+    build:
+      target: development
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      NODE_ENV: 'development'
+    env_file:
+      - .env.development
+    restart: always
+    command: npm run start:dev
+    volumes:
+      - ./:/app
+    depends_on:
+      - database
+    networks:
+      - gym_tracker_database_network
+
+  database:
+    container_name: gym_tracker_database
+    image: postgres:14.0-alpine
+    restart: unless-stopped
+    environment:
+      TZ: 'GMT'
+      PGTZ: 'GMT'
+      POSTGRES_USERNAME: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: gym_tracker_database
+    ports:
+      - "6969:5432"
+    volumes:
+      - gym-tracker-database:/data/postgres
+    networks:
+      - gym_tracker_database_network
+
+networks:
+  gym_tracker_database_network:
+    driver: bridge
+
+volumes:
+  gym-tracker-database:
