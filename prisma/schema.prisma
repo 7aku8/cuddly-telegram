@@ -1,5 +1,5 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
   previewFeatures = ["interactiveTransactions"]
 }
 
@@ -19,17 +19,18 @@ enum ExerciseType {
 model User {
   id String @id @default(uuid()) @db.Uuid
 
-  firstName String @db.VarChar(60) @map("first_name")
-  lastName String @db.VarChar(60) @map("last_name")
+  firstName String @map("first_name") @db.VarChar(60)
+  lastName  String @map("last_name") @db.VarChar(60)
 
-  email String @db.Citext
+  email    String @db.Citext
   password String @db.Citext
 
-  deletedAt DateTime? @db.Timestamptz(6) @map("deleted_at")
-  updatedAt DateTime @default(now()) @updatedAt @db.Timestamptz(6) @map("updated_at")
-  createdAt DateTime @default(now()) @db.Timestamptz(6) @map("created_at")
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(6)
+  updatedAt DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
 
-  workouts Workout[]
+  workouts         Workout[]
+  workoutTemplates WorkoutTemplate[]
 
   @@map("user")
 }
@@ -37,12 +38,15 @@ model User {
 model Workout {
   id String @id @default(uuid()) @db.Uuid
 
-  userId String @db.Uuid @map("user_id")
-  user User @relation(fields: [userId], references: [id])
+  userId String @map("user_id") @db.Uuid
+  user   User   @relation(fields: [userId], references: [id])
 
-  finishedAt DateTime? @db.Timestamptz(6) @map("finished_at")
-  updatedAt DateTime @default(now()) @updatedAt @db.Timestamptz(6) @map("updated_at")
-  createdAt DateTime @default(now()) @db.Timestamptz(6) @map("created_at")
+  finishedAt DateTime? @map("finished_at") @db.Timestamptz(6)
+
+  workoutExercises WorkoutExercise[]
+
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
 
   @@map("workout")
 }
@@ -50,19 +54,23 @@ model Workout {
 model Exercise {
   id String @id @default(uuid()) @db.Uuid
 
-  order Integer
+  order Int
 
-  name String @db.VarChar(60)
+  name        String @db.VarChar(60)
   description String @db.VarChar(1000)
 
   image String @db.VarChar(100)
 
   type ExerciseType
 
-  updatedAt DateTime @default(now()) @updatedAt @db.Timestamptz(6) @map("updated_at")
-  createdAt DateTime @default(now()) @db.Timestamptz(6) @map("created_at")
+  workoutExercises WorkoutExercise[]
+  //  templateExercises TemplateExercise[]
+
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
 
   @@map("exercise")
+  TemplateExercise TemplateExercise[]
 }
 
 model Set {
@@ -70,12 +78,15 @@ model Set {
 
   finished Boolean @default(false)
 
-  reps Integer
-  weight Integer
+  reps     Int
+  weight   Int
+  duration Int
 
-  weightUnitId String @db.Uuid @map("weight_unit_id")
-  weightUnit Unit @relaiton(fields: [weightUnitId], references: [id])
+  workoutExerciseId String          @map("workout_exercise_id") @db.Uuid
+  workoutExercise   WorkoutExercise @relation(fields: [workoutExerciseId], references: [id])
 
+  weightUnitId String @map("weight_unit_id") @db.Uuid
+  weightUnit   Unit   @relation(fields: [weightUnitId], references: [id])
 
   @@map("set")
 }
@@ -84,6 +95,67 @@ model Unit {
   id String @id @default(uuid()) @db.Uuid
 
   name String
+  sets Set[]
 
   @@map("unit")
+}
+
+model WorkoutExercise {
+  id String @id @default(uuid()) @db.Uuid
+
+  order Int
+
+  exerciseId String   @map("exercise_id") @db.Uuid
+  exercise   Exercise @relation(fields: [exerciseId], references: [id])
+
+  workoutId String  @map("workout_id") @db.Uuid
+  workout   Workout @relation(fields: [workoutId], references: [id])
+
+  sets Set[]
+
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  @@map("workout_exercise")
+}
+
+model WorkoutTemplate {
+  id String @id @default(uuid()) @db.Uuid
+
+  name String @db.VarChar(120)
+
+  userId String @map("user_id") @db.Uuid
+  user   User   @relation(fields: [userId], references: [id])
+
+  templateExercises TemplateExercise[]
+
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  @@map("workout_template")
+}
+
+model TemplateExercise {
+  id String @id @default(uuid()) @db.Uuid
+
+  exerciseId String   @map("exercise_id") @db.Uuid
+  exercise   Exercise @relation(fields: [exerciseId], references: [id])
+
+  sets TemplateSet[]
+
+  @@map("template_exercise")
+  WorkoutTemplate   WorkoutTemplate? @relation(fields: [workoutTemplateId], references: [id])
+  workoutTemplateId String?          @db.Uuid
+}
+
+model TemplateSet {
+  id String @id @default(uuid()) @db.Uuid
+
+  templateExerciseId String           @map("template_exercise_id") @db.Uuid
+  templateExercise   TemplateExercise @relation(fields: [templateExerciseId], references: [id])
+
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  @@map("template_set")
 }

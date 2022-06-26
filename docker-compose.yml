@@ -9,6 +9,7 @@ services:
       dockerfile: Dockerfile
     environment:
       NODE_ENV: 'development'
+      DATABASE_URL: 'postgresql://postgres:password@database:5432/gym_tracker_database?schema=public'
     env_file:
       - .env.development
     restart: always
