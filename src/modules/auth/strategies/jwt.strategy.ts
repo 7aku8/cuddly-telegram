@@ -1,14 +1,12 @@
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
-import { AuthService } from '@modules/auth/auth.service';
 import { passportJwtSecret } from 'jwks-rsa';
 import { ConfigService } from '@shared/config.service';
+import { Injectable } from '@nestjs/common';
 
-export class JwtStrategy extends PassportStrategy(Strategy) {
-  constructor(
-    private readonly authService: AuthService,
-    private readonly configService: ConfigService,
-  ) {
+@Injectable()
+export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
+  constructor(private readonly configService: ConfigService) {
     super({
       secretOrKeyProvider: passportJwtSecret({
         cache: true,

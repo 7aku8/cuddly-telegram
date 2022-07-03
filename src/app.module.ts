@@ -4,6 +4,7 @@ import { AppService } from './app.service';
 import { SharedModule } from '@modules/shared/shared.module';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from '@modules/auth/auth.module';
+import { WorkoutModule } from '@modules/workout/workout.module';
 
 type TEnvironmentName = 'production' | 'staging' | 'development';
 const getEnvFileName = (nodeEnv: TEnvironmentName) => {
@@ -25,6 +26,7 @@ const getEnvFileName = (nodeEnv: TEnvironmentName) => {
       isGlobal: true,
       envFilePath: getEnvFileName(<TEnvironmentName>process.env.NODE_ENV),
     }),
+    WorkoutModule,
   ],
   controllers: [AppController],
   providers: [AppService],
