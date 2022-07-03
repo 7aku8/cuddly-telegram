@@ -71,8 +71,8 @@ export class ConfigService {
 
   get authConfig() {
     return {
-      userPoolId: this.getString('OATUH_COGNITO_USER_POOL_ID'),
-      clientId: this.getString('OAUTH_COGNITO_ID'),
+      authority: this.getString('COGNITO_AUTHORITY'),
+      clientId: this.getString('COGNITO_USER_POOL_ID'),
     };
   }
 }
