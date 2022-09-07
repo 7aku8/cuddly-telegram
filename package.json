@@ -18,7 +18,13 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "prisma:generate": "docker exec -it auth_api /bin/sh -c 'npx prisma generate'",
+    "prisma:migrate:dev": "docker exec -it auth_api /bin/sh -c 'npx prisma migrate dev'",
+    "prisma:migrate:reset": "docker exec -it auth_api /bin/sh -c 'npx prisma migrate reset'",
+    "prisma:format": "docker exec -it auth_api /bin/sh -c 'npx prisma format'",
+    "prisma:db:seed": "docker exec -it notification_api /bin/sh -c 'npx prisma db seed'",
+    "prisma:studio": "docker exec -it auth_api /bin/sh -c 'npx prisma studio --port 1234'"
   },
   "dependencies": {
     "@nestjs/common": "^8.0.0",
@@ -50,7 +56,6 @@
     "@types/axios": "^0.14.0",
     "@types/compression": "^1.7.2",
     "@types/express": "^4.17.13",
-    "@types/helmet": "^4.0.0",
     "@types/jest": "27.5.0",
     "@types/morgan": "^1.9.3",
     "@types/node": "^16.0.0",
