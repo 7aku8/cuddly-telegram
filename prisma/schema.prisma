@@ -64,10 +64,14 @@ model Workout {
 model WorkoutExerciseRep {
   id String @id @default(uuid()) @db.Uuid
 
+  order Int
   durationInSeconds Int? @map("duration_in_seconds")
   weight Decimal? @db.Decimal(5, 2)
 
   note String @db.VarChar(500)
+
+  workoutExercise WorkoutExercise @relation(fields: [workoutExerciseId], references: [id])
+  workoutExerciseId String @db.Uuid @map("workout_exercise_id")
 
   @@map("workout_exercise_rep")
 }
@@ -82,6 +86,7 @@ model WorkoutExercise {
   workout Workout @relation(fields: [workoutId], references: [id])
 
   workoutLastExercise Workout? @relation("last_workout_exercise")
+  reps WorkoutExerciseRep[]
 
   order Int
   note String? @db.VarChar(1000)
@@ -89,6 +94,7 @@ model WorkoutExercise {
   updatedAt DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
   createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
 
+  @@unique([workoutId, exerciseId, order])
   @@map("workout_exercise")
 }
 
