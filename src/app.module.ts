@@ -5,6 +5,7 @@ import { SharedModule } from '@modules/shared/shared.module';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from '@modules/auth/auth.module';
 import { WorkoutModule } from '@modules/workout/workout.module';
+import { PrismaModule } from '@modules/prisma/prisma.module';
 
 type TEnvironmentName = 'production' | 'staging' | 'development';
 const getEnvFileName = (nodeEnv: TEnvironmentName) => {
@@ -20,6 +21,7 @@ const getEnvFileName = (nodeEnv: TEnvironmentName) => {
 
 @Module({
   imports: [
+    PrismaModule,
     AuthModule,
     SharedModule,
     ConfigModule.forRoot({

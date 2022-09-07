@@ -5,7 +5,9 @@ import { ConfigService } from '@shared/config.service';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
-export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
+export class JwtStrategy extends PassportStrategy(Strategy, 'cognito-jwt') {
+  static strategyName = 'cognito-jwt';
+
   constructor(private readonly configService: ConfigService) {
     super({
       secretOrKeyProvider: passportJwtSecret({

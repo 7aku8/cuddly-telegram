@@ -58,6 +58,12 @@ export class ConfigService {
     return this.getString('NODE_ENV');
   }
 
+  get databaseConfig() {
+    return {
+      url: this.getString('DATABASE_URL'),
+    };
+  }
+
   get appConfig() {
     return {
       port: this.getNumber('PORT'),
