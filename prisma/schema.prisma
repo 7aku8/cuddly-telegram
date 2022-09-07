@@ -14,6 +14,19 @@ enum ExerciseType {
   REPS
 }
 
+model User {
+  id String @id @default(uuid()) @db.Uuid
+
+  externalUserId String @db.Uuid @map("external_user_id") @unique
+
+  workouts Workout[]
+
+  updatedAt DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  @@map("user")
+}
+
 model Exercise {
   id String @id @default(uuid()) @db.Uuid
 
@@ -31,13 +44,16 @@ model Exercise {
 model Workout {
   id String @id @default(uuid()) @db.Uuid
 
-  finishedAt DateTime @map("finished_at")
-  note String @db.VarChar(500)
+  finishedAt DateTime? @map("finished_at")
+  note String? @db.VarChar(500)
 
   exercises WorkoutExercise[]
 
-  lastExercise WorkoutExercise @relation("last_workout_exercise",fields: [lastExerciseId], references: [id])
-  lastExerciseId String @db.Uuid @map("last_exercise_id")
+  lastExercise WorkoutExercise? @relation("last_workout_exercise",fields: [lastExerciseId], references: [id])
+  lastExerciseId String? @db.Uuid @map("last_exercise_id")
+
+  user User @relation(fields: [userId], references: [id])
+  userId String @db.Uuid @map("user_id")
 
   updatedAt DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
   createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
@@ -65,7 +81,7 @@ model WorkoutExercise {
   workoutId String @db.Uuid @map("workout_id")
   workout Workout @relation(fields: [workoutId], references: [id])
 
-  workoutLastExercise WorkoutLastExercise? @relation("last_workout_exercise")
+  workoutLastExercise Workout? @relation("last_workout_exercise")
 
   order Int
   note String? @db.VarChar(1000)

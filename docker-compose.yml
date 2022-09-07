@@ -16,7 +16,7 @@ services:
     command: npm run start:dev
     ports:
       - "4444:4444"
-      - "5555:1234" # prisma studio
+      - "4545:1234" # prisma studio
     volumes:
       - ./:/app
     depends_on:
