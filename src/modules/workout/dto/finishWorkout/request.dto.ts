@@ -1,13 +1,8 @@
 import { IsNotEmpty, IsString, IsUUID } from 'class-validator';
 
-export class AddWorkoutExerciseRequestDto {
+export class FinishWorkoutRequestDto {
   @IsString()
   @IsNotEmpty()
   @IsUUID()
   workoutId: string;
-
-  @IsString()
-  @IsNotEmpty()
-  @IsUUID()
-  exerciseId: string;
 }

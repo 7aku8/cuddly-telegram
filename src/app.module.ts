@@ -6,6 +6,7 @@ import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from '@modules/auth/auth.module';
 import { WorkoutModule } from '@modules/workout/workout.module';
 import { PrismaModule } from '@modules/prisma/prisma.module';
+import { ExerciseModule } from '@modules/exercise/exercise.module';
 
 type TEnvironmentName = 'production' | 'staging' | 'development';
 const getEnvFileName = (nodeEnv: TEnvironmentName) => {
@@ -29,6 +30,7 @@ const getEnvFileName = (nodeEnv: TEnvironmentName) => {
       envFilePath: getEnvFileName(<TEnvironmentName>process.env.NODE_ENV),
     }),
     WorkoutModule,
+    ExerciseModule,
   ],
   controllers: [AppController],
   providers: [AppService],

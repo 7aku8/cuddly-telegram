@@ -1,6 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@modules/prisma/prisma.service';
 import { HasNotFinishedWorkoutException } from '@modules/workout/exceptions/has-not-finished-workout.exception';
+import dayjs from 'dayjs';
+import { WorkoutNotFoundException } from '@modules/workout/exceptions/workout-not-found.exception';
+import { NotOwnerOfWorkoutException } from '@modules/workout/exceptions/not-owner-of-workout.exception';
+
+type TFinishWorkout = {
+  userId: string;
+  workoutId: string;
+};
 
 @Injectable()
 export class WorkoutService {
@@ -41,6 +49,39 @@ export class WorkoutService {
       select: {
         id: true,
       },
+    });
+  }
+
+  async finishWorkout({ workoutId, userId }: TFinishWorkout) {
+    const workout = await this.prisma.workout.findUnique({
+      where: {
+        id: workoutId,
+      },
+      select: {
+        userId: true,
+      },
+    });
+
+    if (!workout) {
+      throw new WorkoutNotFoundException(workoutId);
+    }
+    if (workout.userId != userId) {
+      throw new NotOwnerOfWorkoutException(workoutId);
+    }
+
+    const workoutExercisesAmount = await this.prisma.workoutExercise.count({
+      where: { workoutId },
+    });
+
+    if (workoutExercisesAmount) {
+      return this.prisma.workout.update({
+        where: { id: workoutId },
+        data: { finishedAt: dayjs().toDate() },
+      });
+    }
+
+    return this.prisma.workout.delete({
+      where: { id: workoutId },
     });
   }
 }

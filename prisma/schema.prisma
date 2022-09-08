@@ -95,6 +95,7 @@ model WorkoutExercise {
   createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
 
   @@unique([workoutId, exerciseId, order])
+  @@unique([workoutId, exerciseId])
   @@map("workout_exercise")
 }
 

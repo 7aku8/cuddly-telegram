@@ -59,4 +59,8 @@ export class ExerciseService {
       },
     });
   }
+
+  async getAllExercises() {
+    return this.prisma.exercise.findMany();
+  }
 }
